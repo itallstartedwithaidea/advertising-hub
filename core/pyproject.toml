@@ -1,12 +1,12 @@
 [build-system]
 requires = ["setuptools>=61.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "advertising-hub-core"
 version = "0.1.0"
 description = "Shared utilities for cross-platform advertising automation"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 authors = [{name = "John Williams", email = "john@itallstartedwithaidea.com"}]
 dependencies = ["httpx>=0.24.0", "pydantic>=2.0", "python-dotenv>=1.0.0"]
@@ -19,3 +19,7 @@ google = ["google-ads>=24.0.0", "google-auth>=2.0.0"]
 meta = ["facebook-business>=19.0.0"]
 microsoft = ["bingads>=13.0.0"]
 all = ["advertising-hub-core[google,meta,microsoft]"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["advertising_hub_core", "advertising_hub_core.*", "auth", "auth.*", "errors", "errors.*", "models", "models.*", "rate_limiting", "rate_limiting.*", "utils", "utils.*"]
