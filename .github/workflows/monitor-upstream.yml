@@ -1,0 +1,136 @@
+name: Monitor Upstream Changes
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday 9am UTC
+  workflow_dispatch:
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream repo status and API versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ISSUES=""
+
+          echo "=== Checking upstream repos ==="
+
+          # Check each upstream repo still exists and get latest release/commit
+          declare -A REPOS=(
+            ["googleads/google-ads-python"]="Google Ads Python SDK"
+            ["googleads/google-ads-node"]="Google Ads Node SDK"
+            ["facebook/facebook-python-business-sdk"]="Meta Business Python SDK"
+            ["facebook/facebook-nodejs-business-sdk"]="Meta Business Node SDK"
+            ["BingAds/BingAds-Python-SDK"]="Microsoft Ads Python SDK"
+            ["pinterest/pinterest-python-sdk"]="Pinterest Python SDK"
+            ["pinterest/api-quickstart"]="Pinterest API Quickstart"
+            ["amzn/ads-advanced-tools-docs"]="Amazon Ads Advanced Tools"
+            ["criteo/criteo-api-python-sdk"]="Criteo Python SDK"
+            ["thetradedesk/Platform"]="The Trade Desk Platform"
+            ["itallstartedwithaidea/google-ads-mcp"]="Google Ads MCP (ours)"
+            ["itallstartedwithaidea/google-ads-api-agent"]="Google Ads API Agent (ours)"
+            ["itallstartedwithaidea/google-ads-gemini-extension"]="Gemini Extension (ours)"
+            ["itallstartedwithaidea/creative-asset-validator"]="Creative Asset Validator (ours)"
+            ["itallstartedwithaidea/agency-agents-enhanced"]="Agency Agents Enhanced (ours)"
+          )
+
+          for repo in "${!REPOS[@]}"; do
+            name="${REPOS[$repo]}"
+            echo "Checking $repo ($name)..."
+
+            # Check if repo exists
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$repo")
+
+            if [ "$STATUS" != "200" ]; then
+              ISSUES="$ISSUES\n- ❌ **$name** ($repo): HTTP $STATUS — repo may be renamed, archived, or deleted"
+              continue
+            fi
+
+            # Get last push date
+            PUSHED=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$repo" | jq -r '.pushed_at // "unknown"')
+            echo "  Last push: $PUSHED"
+
+            # Check if archived
+            ARCHIVED=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$repo" | jq -r '.archived')
+            if [ "$ARCHIVED" = "true" ]; then
+              ISSUES="$ISSUES\n- ⚠️ **$name** ($repo): Repository has been **archived**"
+            fi
+
+            # Get latest release if exists
+            RELEASE=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name // "none"')
+            if [ "$RELEASE" != "none" ]; then
+              echo "  Latest release: $RELEASE"
+            fi
+          done
+
+          echo ""
+          echo "=== Checking platform API documentation pages ==="
+
+          # Check key documentation URLs are still live
+          declare -A DOCS=(
+            ["https://developers.google.com/google-ads/api/docs/start"]="Google Ads API Docs"
+            ["https://developers.facebook.com/docs/marketing-apis"]="Meta Marketing API Docs"
+            ["https://learn.microsoft.com/en-us/advertising/guides/"]="Microsoft Ads Docs"
+            ["https://advertising.amazon.com/API/docs/en-us"]="Amazon Ads API Docs"
+            ["https://learn.microsoft.com/en-us/linkedin/marketing/"]="LinkedIn Marketing API Docs"
+            ["https://developers.pinterest.com/docs/api/v5/"]="Pinterest API Docs"
+            ["https://developers.criteo.com/"]="Criteo Developer Docs"
+          )
+
+          for url in "${!DOCS[@]}"; do
+            name="${DOCS[$url]}"
+            HTTP=$(curl -s -o /dev/null -w "%{http_code}" -L "$url" --max-time 10)
+            if [ "$HTTP" != "200" ]; then
+              ISSUES="$ISSUES\n- ⚠️ **$name**: $url returned HTTP $HTTP"
+            fi
+          done
+
+          # Create issue if problems found
+          if [ -n "$ISSUES" ]; then
+            echo -e "\n=== Issues Found ==="
+            echo -e "$ISSUES"
+
+            BODY="## Weekly Upstream Monitor — $(date +%Y-%m-%d)\n\nThe following issues were detected:\n$ISSUES\n\n---\n*This issue was automatically created by the upstream monitor workflow.*"
+
+            gh issue create \
+              --title "🔍 Upstream Monitor: Issues detected $(date +%Y-%m-%d)" \
+              --body "$(echo -e "$BODY")" \
+              --label "upstream-monitor"
+          else
+            echo "✅ All upstream repos and docs are healthy"
+          fi
+
+  check-api-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for API version changes
+        run: |
+          echo "=== Checking PLATFORM.yaml API versions against latest ==="
+
+          # Google Ads - check latest API version
+          echo "Google Ads: Currently tracking $(grep 'current_version' platforms/google-ads/PLATFORM.yaml | awk '{print $2}')"
+
+          # Meta - check latest API version
+          echo "Meta Ads: Currently tracking $(grep 'current_version' platforms/meta-ads/PLATFORM.yaml | awk '{print $2}')"
+
+          # Microsoft - check latest API version
+          echo "Microsoft Ads: Currently tracking $(grep 'current_version' platforms/microsoft-ads/PLATFORM.yaml | awk '{print $2}')"
+
+          echo ""
+          echo "Manual check required: Compare these against platform changelogs"
+          echo "  Google: https://developers.google.com/google-ads/api/docs/release-notes"
+          echo "  Meta: https://developers.facebook.com/docs/graph-api/changelog"
+          echo "  Microsoft: https://learn.microsoft.com/en-us/advertising/guides/migration-guide"

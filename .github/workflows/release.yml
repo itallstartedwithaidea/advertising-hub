@@ -1,0 +1,59 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          # Get commits since last tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s" "$PREV_TAG"..HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"- %s")
+          fi
+
+          # Count changes by area
+          AGENTS=$(git diff --name-only "$PREV_TAG"..HEAD 2>/dev/null | grep "^agents/" | wc -l || echo 0)
+          PLATFORMS=$(git diff --name-only "$PREV_TAG"..HEAD 2>/dev/null | grep "^platforms/" | wc -l || echo 0)
+          MCP=$(git diff --name-only "$PREV_TAG"..HEAD 2>/dev/null | grep "^mcp-servers/" | wc -l || echo 0)
+          WIKI=$(git diff --name-only "$PREV_TAG"..HEAD 2>/dev/null | grep "^wiki/" | wc -l || echo 0)
+          CORE=$(git diff --name-only "$PREV_TAG"..HEAD 2>/dev/null | grep "^core/" | wc -l || echo 0)
+
+          cat > release-notes.md << NOTES
+          ## What Changed
+
+          | Area | Files Changed |
+          |------|--------------|
+          | Agents | $AGENTS |
+          | Platforms | $PLATFORMS |
+          | MCP Servers | $MCP |
+          | Wiki | $WIKI |
+          | Core Package | $CORE |
+
+          ## Commits
+
+          $COMMITS
+
+          ---
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${{ github.ref_name }}
+          NOTES
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          generate_release_notes: true

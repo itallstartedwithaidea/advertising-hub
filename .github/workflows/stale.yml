@@ -1,0 +1,30 @@
+name: Manage Stale Issues
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily midnight UTC
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          stale-issue-message: >
+            This issue has been open for 30 days without activity.
+            It will be closed in 7 days unless there's a new comment.
+            If this is still relevant, please comment or add the `keep-open` label.
+          stale-pr-message: >
+            This PR has been open for 14 days without activity.
+            It will be closed in 7 days unless updated.
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+          days-before-stale: 30
+          days-before-close: 7
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          exempt-issue-labels: 'keep-open,upstream-monitor,repo-sync'
+          exempt-pr-labels: 'keep-open'

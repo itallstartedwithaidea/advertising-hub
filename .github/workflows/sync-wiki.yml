@@ -1,0 +1,49 @@
+name: Sync Wiki
+on:
+  push:
+    paths: ['wiki/**']
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync wiki/ folder to GitHub Wiki
+        env:
+          GH_TOKEN: ${{ secrets.WIKI_TOKEN }}
+        run: |
+          # Clone the wiki repo
+          git clone https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki-deploy
+
+          # Clear existing wiki content (except .git)
+          find wiki-deploy -maxdepth 1 -not -name '.git' -not -name 'wiki-deploy' -delete 2>/dev/null || true
+
+          # Copy all wiki markdown files (flatten structure for GitHub Wiki)
+          cp wiki/Home.md wiki-deploy/
+          cp wiki/_Sidebar.md wiki-deploy/
+          cp wiki/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/agents/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/platforms/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/cross-platform/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/mcp/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/use-cases/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/tools/*.md wiki-deploy/ 2>/dev/null || true
+          cp wiki/integrations/*.md wiki-deploy/ 2>/dev/null || true
+
+          # Push to wiki
+          cd wiki-deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No wiki changes to push"
+          else
+            git commit -m "Sync wiki from main branch — $(date +%Y-%m-%d)"
+            git push origin master
+            echo "✅ Wiki synced"
+          fi

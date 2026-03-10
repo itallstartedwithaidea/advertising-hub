@@ -1,0 +1,49 @@
+# .github/labeler.yml — auto-label PRs based on changed files
+
+core-package:
+  - changed-files:
+    - any-glob-to-any-file: 'core/**'
+
+agents:
+  - changed-files:
+    - any-glob-to-any-file: 'agents/**'
+
+platform-google-ads:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/google-ads/**'
+
+platform-meta-ads:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/meta-ads/**'
+
+platform-microsoft-ads:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/microsoft-ads/**'
+
+platform-amazon-ads:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/amazon-ads/**'
+
+platform-linkedin-ads:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/linkedin-ads/**'
+
+mcp-servers:
+  - changed-files:
+    - any-glob-to-any-file: 'mcp-servers/**'
+
+wiki:
+  - changed-files:
+    - any-glob-to-any-file: 'wiki/**'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**'
+
+integrations:
+  - changed-files:
+    - any-glob-to-any-file: 'integrations/**'
+
+patterns:
+  - changed-files:
+    - any-glob-to-any-file: 'platforms/*/patterns/**'
