@@ -1,7 +1,22 @@
 {
-  "itallstartedwithaidea/google-ads-mcp": {"sha": "", "tag": ""},
-  "itallstartedwithaidea/google-ads-api-agent": {"sha": "", "tag": ""},
-  "itallstartedwithaidea/google-ads-gemini-extension": {"sha": "", "tag": ""},
-  "itallstartedwithaidea/creative-asset-validator": {"sha": "", "tag": ""},
-  "itallstartedwithaidea/agency-agents-enhanced": {"sha": "", "tag": ""}
+  "itallstartedwithaidea/google-ads-mcp": {
+    "sha": "222db6ebf88524478bfcf0c6a2370dccd1906749",
+    "tag": "v1.0"
+  },
+  "itallstartedwithaidea/google-ads-api-agent": {
+    "sha": "339cb2747ea1f7082fab6033c3a2bcb71fd68143",
+    "tag": "v1.0"
+  },
+  "itallstartedwithaidea/google-ads-gemini-extension": {
+    "sha": "b663df2cd49deca1e46eb47a9132ee23174f6a3e",
+    "tag": "v2.0"
+  },
+  "itallstartedwithaidea/creative-asset-validator": {
+    "sha": "28cd0db5857051a71907b853e22c2c36df69558a",
+    "tag": "none"
+  },
+  "itallstartedwithaidea/agency-agents-enhanced": {
+    "sha": "",
+    "tag": ""
+  }
 }
