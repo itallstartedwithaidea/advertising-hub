@@ -142,6 +142,7 @@ Tools built and deployed from this ecosystem:
 | [google-ads-mcp](https://github.com/itallstartedwithaidea/google-ads-mcp) | MCP server for Google Ads API access | ✅ Live |
 | [google-ads-api-agent](https://github.com/itallstartedwithaidea/google-ads-api-agent) | Enterprise Google Ads management on Claude | ✅ Live |
 | [google-ads-gemini-extension](https://github.com/itallstartedwithaidea/google-ads-gemini-extension) | Gemini CLI extension for Google Ads | ✅ Live |
+| [gemini-cli-googleadsagent](https://github.com/itallstartedwithaidea/gemini-cli-googleadsagent) | Gemini CLI fork with Google Ads commands & agent skills | ✅ Live |
 | [creative-asset-validator](https://github.com/itallstartedwithaidea/creative-asset-validator) | Multi-platform creative validation | ✅ Live |
 | [googleadsagent.ai](https://googleadsagent.ai) | Production multi-agent system (Simba, Nemo, Elsa, Baymax, Buddy) | ✅ Live |
 
