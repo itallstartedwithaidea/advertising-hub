@@ -11,6 +11,8 @@
 
 **Connected Properties:** [itallstartedwithaidea.com](https://www.itallstartedwithaidea.com) · [googleadsagent.ai](https://googleadsagent.ai)
 
+**Keywords:** Google Ads API, Meta Ads API, Microsoft Ads, Amazon Ads, LinkedIn Ads, MCP servers, Model Context Protocol, AI advertising agents, PPC automation, campaign management, GAQL, digital marketing AI, programmatic advertising, ad creative validation, cross-platform reporting, paid media tools, performance marketing, Google Ads scripts, Gemini CLI, Claude Code
+
 ---
 
 ## 🚀 What Is This?
