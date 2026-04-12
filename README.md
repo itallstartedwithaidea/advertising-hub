@@ -3,6 +3,9 @@
 > **The open-source one-stop shop for advertising platform APIs, MCP servers, AI agents, and cross-platform automation.** 14 platforms. 25+ specialized agents. Production tooling. Built by practitioners who manage real ad spend.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[English](README.md) | [Français](README.fr.md) | [Español](README.es.md) | [中文](README.zh.md) | [Nederlands](README.nl.md) | [Русский](README.ru.md) | [한국어](README.ko.md)
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![Platforms](https://img.shields.io/badge/Platforms-14-blue)]()
 [![Agents](https://img.shields.io/badge/Agents-25+-purple)]()
