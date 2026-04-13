@@ -16,6 +16,6 @@ Homepage = "https://github.com/itallstartedwithaidea/advertising-hub"
 
 [project.optional-dependencies]
 google = ["google-ads>=24.0.0", "google-auth>=2.0.0"]
-meta = ["facebook-business>=19.0.0"]
+meta = ["facebook-business>=25.0.1"]
 microsoft = ["bingads>=13.0.0"]
 all = ["advertising-hub-core[google,meta,microsoft]"]
